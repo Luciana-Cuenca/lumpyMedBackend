@@ -1,11 +1,6 @@
 package com.medical.dosage.pediatric_dosage_calculator.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name ="medicines")
@@ -20,19 +15,22 @@ public class Medicine {
 
     private String description;
 
-    // mg/kg/dosis pediatrica recomendada
+    // mg/kg/día recomendado (AIEPI)
     @Column(nullable = false)
-    private Double dosageMin; // mg/kg
+    private Double mgKgDay;
+
+    // cuántas veces al día se administra (2,3,4)
     @Column(nullable = false)
-    private Double dosageMax; // mg/kg
-    private Double maxDosePerDose;
+    private Integer dosesPerDay;
 
-
-    // concentración estandar 
+    // concentración del frasco comercial
     @Column(nullable = false)
-     private String concentration;// mg por ml
+    private Double concentrationMg; // mg
 
-    // GETTERS & SETTERS
+    @Column(nullable = false)
+    private Double concentrationMl; // ml
+
+    // getters & setters
     public Long getId() { return id; }
 
     public String getName() { return name; }
@@ -41,17 +39,15 @@ public class Medicine {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public Double getDosageMin() { return dosageMin; }
-    public void setDosageMin(Double dosageMin) { this.dosageMin = dosageMin; }
+    public Double getMgKgDay() { return mgKgDay; }
+    public void setMgKgDay(Double mgKgDay) { this.mgKgDay = mgKgDay; }
 
-    public Double getDosageMax() { return dosageMax; }
-    public void setDosageMax(Double dosageMax) { this.dosageMax = dosageMax; }
+    public Integer getDosesPerDay() { return dosesPerDay; }
+    public void setDosesPerDay(Integer dosesPerDay) { this.dosesPerDay = dosesPerDay; }
 
-    public String getConcentration() { return concentration;}
-    public void setConcentration(String concentration) { this.concentration = concentration; }
+    public Double getConcentrationMg() { return concentrationMg; }
+    public void setConcentrationMg(Double concentrationMg) { this.concentrationMg = concentrationMg; }
 
-    public Double getMaxDosePerDose() {return  maxDosePerDose; }
-    public void setMaxDosePerDose(Double maxDosePerDose) {this.maxDosePerDose = maxDosePerDose; }
-
-
+    public Double getConcentrationMl() { return concentrationMl; }
+    public void setConcentrationMl(Double concentrationMl) { this.concentrationMl = concentrationMl; }
 }
