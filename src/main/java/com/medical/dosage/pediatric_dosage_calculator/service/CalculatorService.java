@@ -20,25 +20,45 @@ public class CalculatorService {
         this.calculatorStrategy = new WeightBasedDoseCalculator();
     }
 
-    public DoseResponse calculateDose(String medicineName, double weightKg) throws Exception {
+    public DoseResponse calculateDose(String medicineName, double weightKg, int ageYears, int ageMonths) throws Exception {
         Optional<Medicine> medicineOpt = medicineRepository.findByName(medicineName);
         if (medicineOpt.isEmpty())
             throw new Exception("Medicine not found");
 
         Medicine m = medicineOpt.get();
 
+        int totalAgeMonths = ageYears * 12 + ageMonths;
+
+        // Validacion de edad AIEPI
+        String alert = "";
+        if (m.getMinAgeMonths() != null && totalAgeMonths < m.getMinAgeMonths()) {
+            alert += "Paciente demasiado joven. ";
+        }
+        if (m.getMaxAgeMonths() != null && totalAgeMonths > m.getMaxAgeMonths()) {
+            alert += "Paciente demasiado mayor. ";
+        }
+
         double mgPerDay = calculatorStrategy.calculateMgPerDay(m, weightKg);
         double mgPerDose = mgPerDay / m.getDosesPerDay();
         double mgPerMl = m.getConcentrationMg() / m.getConcentrationMl();
         double mlPerDose = mgPerDose / mgPerMl;
 
+        // Alertas de dosis segura
+        if (mlPerDose < m.getMinSafeMl()) alert += "Dosis por debajo del rango seguro. ";
+        if (mlPerDose > m.getMaxSafeMl()) alert += "Dosis por encima del rango seguro. ";
+
+        String safeRange = m.getMinSafeMl() + " - " + m.getMaxSafeMl() + " ml";
+
         return new DoseResponse(
                 medicineName,
                 weightKg,
+                totalAgeMonths,
                 round(mgPerDay, 2),
                 m.getDosesPerDay(),
                 round(mgPerDose, 2),
-                round(mlPerDose, 2)
+                round(mlPerDose, 2),
+                alert.isEmpty() ? "Dentro del rango seguro" : alert.trim(),
+                safeRange
         );
     }
 
