@@ -1,0 +1,30 @@
+# Maven / Spring Boot
+/target/
+/out/
+/build/
+/.mvn/wrapper/maven-wrapper.jar
+/mvnw
+/mvnw.cmd
+
+
+.vscode/
+
+
+# Archivos de configuración sensibles
+/src/main/resources/application.properties
+/src/main/resources/application-*.properties
+.env
+*.secret
+
+
+# Logs
+*.log
+
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+
+# Otros
+HELP.md
