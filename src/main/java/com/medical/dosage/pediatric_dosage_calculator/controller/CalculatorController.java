@@ -1,56 +1,37 @@
 package com.medical.dosage.pediatric_dosage_calculator.controller;
 
-import org.springframework.web.bind.annotation.*;
+import com.medical.dosage.pediatric_dosage_calculator.dto.DoseRequest;
+import com.medical.dosage.pediatric_dosage_calculator.dto.DoseResponse;
+import com.medical.dosage.pediatric_dosage_calculator.service.CalculatorService;
 import org.springframework.http.ResponseEntity;
-import com.medical.dosage.pediatric_dosage_calculator.repository.MedicineRepository;
-
-import java.util.*;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/calculator")
 @CrossOrigin("*")
 public class CalculatorController {
 
-    private final MedicineRepository medicineRepository;
+    private final CalculatorService calculatorService;
 
-    public CalculatorController(MedicineRepository medicineRepository){
-        this.medicineRepository = medicineRepository;
+    public CalculatorController(CalculatorService calculatorService) {
+        this.calculatorService = calculatorService;
     }
 
     @PostMapping("/dose")
-    public ResponseEntity<?> calculate(@RequestBody Map<String, Object> payload) {
-
+    public ResponseEntity<?> calculate(@RequestBody DoseRequest request) {
         try {
-            String medicineName = payload.get("medicineName").toString();
-            Double weightKg = Double.valueOf(payload.get("weightKg").toString());
+            // Pasamos tanto años como meses
+            DoseResponse response = calculatorService.calculateDose(
+                    request.getMedicineName(),
+                    request.getWeightKg(),
+                    request.getAgeYears(),
+                    request.getAgeMonths()
+            );
 
-            var medicineOpt = medicineRepository.findByName(medicineName);
-            if (medicineOpt.isEmpty())
-                return ResponseEntity.badRequest().body("Medicine not found");
-
-            var m = medicineOpt.get();
-
-            double mgPerDay = m.getMgKgDay() * weightKg;
-            double mgPerDose = mgPerDay / m.getDosesPerDay();
-            double mgPerMl = m.getConcentrationMg() / m.getConcentrationMl();
-            double mlPerDose = mgPerDose / mgPerMl;
-            
-            return ResponseEntity.ok(Map.of(
-                    "medicine", medicineName,
-                    "weightKg", weightKg,
-                    "mgPerDay", round(mgPerDay,2),
-                    "dosesPerDay", m.getDosesPerDay(),
-                    "mgPerDose", round(mgPerDose,2),
-                    "mlPerDose", round(mlPerDose,2)
-            ));
-
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
-    }
+}
 
-    private static double round(double v, int places) {
-        double f = Math.pow(10, places);
-        return Math.round(v * f) / f;
-    }
 }
