@@ -3,7 +3,7 @@ package com.medical.dosage.pediatric_dosage_calculator.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name ="medicines")
+@Table(name = "medicines")
 public class Medicine {
 
     @Id
@@ -19,22 +19,15 @@ public class Medicine {
     @Column(nullable = false)
     private Double mgKgDay;
 
-    // cuántas veces al día se administra (2,3,4)
+    // cuántas veces al día se administra
     @Column(nullable = false)
     private Integer dosesPerDay;
 
-    // concentración del frasco comercial
+    // concentracion estandar del frasco comercial
     @Column(nullable = false)
     private Double concentrationMg; // mg
-
     @Column(nullable = false)
     private Double concentrationMl; // ml
-
-    @Column(name = "min_age_months")
-    private Integer minAgeMonths;
-
-    @Column(name = "max_age_months")
-    private Integer maxAgeMonths;
 
     @Column(name = "min_safe_ml")
     private Double minSafeMl;
@@ -42,7 +35,7 @@ public class Medicine {
     @Column(name = "max_safe_ml")
     private Double maxSafeMl;
 
-    // getters & setters
+    // Getters y setters
     public Long getId() { return id; }
 
     public String getName() { return name; }
@@ -63,16 +56,9 @@ public class Medicine {
     public Double getConcentrationMl() { return concentrationMl; }
     public void setConcentrationMl(Double concentrationMl) { this.concentrationMl = concentrationMl; }
 
-    public Integer getMinAgeMonths() { return minAgeMonths; }
-    public void setMinAgeMonths(Integer minAgeMonths) { this.minAgeMonths = minAgeMonths; }
-
-    public Integer getMaxAgeMonths() { return maxAgeMonths; }
-    public void setMaxAgeMonths(Integer maxAgeMonths) { this.maxAgeMonths = maxAgeMonths; }
-
     public Double getMinSafeMl() { return minSafeMl; }
     public void setMinSafeMl(Double minSafeMl) { this.minSafeMl = minSafeMl; }
 
     public Double getMaxSafeMl() { return maxSafeMl; }
     public void setMaxSafeMl(Double maxSafeMl) { this.maxSafeMl = maxSafeMl; }
-
 }
