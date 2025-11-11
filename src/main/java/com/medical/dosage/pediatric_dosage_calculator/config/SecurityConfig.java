@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/medicines/{id}").authenticated()     // GET por id → cualquier rol con login
                 .requestMatchers("/api/medicines/**").hasAuthority("ADMIN") // POST/PUT/DELETE → solo admin
                 .requestMatchers("/api/calculator/**").authenticated() // permiso para calculadora (cualquier usuario)
+                .requestMatchers("/api/ai/**").authenticated() // permiso para IA (cualquier usuario)
                 .anyRequest().authenticated()
             );
        
